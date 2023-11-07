@@ -2,10 +2,13 @@ import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { IssueItem } from "./IssueItem";
 
-export default function IssuesList() {
-  const issuesQuery = useQuery(["issues"], () =>
-    fetch("/api/issues").then((response) => response.json())
-  );
+export default function IssuesList({ labels }) {
+  const issuesQuery = useQuery(["issues", { labels }], () => {
+    const labelsString = labels.map((label) => `labels[]=${label}`).join("&");
+    return fetch(`/api/issues?${labelsString}`).then((response) =>
+      response.json()
+    );
+  });
   return (
     <div>
       <h1>Issues List</h1>
